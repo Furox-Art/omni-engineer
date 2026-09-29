@@ -308,11 +308,17 @@ def get_streaming_response(messages, model):
 
 def read_file_content(filepath):
     try:
-        with open(filepath, 'r', encoding='utf-8') as file:
-            return file.read()
+        with open(filepath, 'rb') as file:
+            raw_content = file.read()
+
+        try:
+            return raw_content.decode('utf-8')
+        except UnicodeDecodeError:
+            # Older Windows-authored text/HTML files are commonly CP1252.
+            return raw_content.decode('cp1252')
     except FileNotFoundError:
         return f"❌ Error: File not found: {filepath}"
-    except IOError as e:
+    except (IOError, UnicodeDecodeError) as e:
         return f"❌ Error reading {filepath}: {e}"
 
 def write_file_content(filepath, content):
