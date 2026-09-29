@@ -246,7 +246,7 @@ def get_streaming_response(messages, model):
             payload["reasoning"] = reasoning_config
         
         # Make the direct API call
-        response = requests.post(url, json=payload, headers=headers, stream=True)
+        response = requests.post(url, json=payload, headers=headers, stream=True, timeout=(10, 300))
         response.raise_for_status()
         
         full_response = ""
